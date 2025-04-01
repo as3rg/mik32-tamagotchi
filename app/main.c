@@ -1,17 +1,12 @@
 #include "mik32_hal_usart.h"
-#include "mik32_hal_scr1_timer.h"
 #include "mik32_hal_i2c.h"
 #include "lcd_driver.h"
-/*
- * Данный пример демонстрирует вывод данных через USART.
- */
-
 
 static void SystemClock_Config();
 static void USART_Init();
 static void I2C_Init();
 
-static USART_HandleTypeDef husart0;
+USART_HandleTypeDef husart0;
 I2C_HandleTypeDef hi2c;
 
 int main()
@@ -20,29 +15,39 @@ int main()
     USART_Init();
     I2C_Init();    
     
-    uint8_t data[1] = { 0x55 };
-    uint8_t size = 8; 
-
+    uint8_t rx_buffer[1];    
 
     lcd_init ();
-    lcd_put_cur(0, 0);
-    lcd_send_string ("HELLO WORLD");
-    lcd_put_cur(1, 0);
-    lcd_send_string("from CTECH");
+    lcd_send_string("Hope it", 0, 5);
+    lcd_send_string("WORKS", 1, 6);  
 
     while (1)
     {
-        if(HAL_OK == HAL_I2C_Master_Transmit(&hi2c, 0x27, data, size, I2C_TIMEOUT_DEFAULT)) {
-            HAL_USART_Print(&husart0, "I2C Example Start\r\n", USART_TIMEOUT_DEFAULT);
+        HAL_USART_Receive(&husart0, rx_buffer, USART_TIMEOUT_DEFAULT);
+
+        switch(rx_buffer[0]) 
+        {
+            case 'A':
+                lcd_clear();
+                lcd_send_string("Hello", 0, 5);
+                lcd_send_string("Yadro", 1, 3);
+                break;
+
+            case 'B':
+                lcd_clear();
+                lcd_send_int(124, 0, 0);
+                lcd_send_int(421, 1, 5);
+                break;
+
+            case 'C':
+                lcd_clear();
+                lcd_send_double(-53.32, 0, 4);
+                lcd_send_double(-3.145, 1, 0);
+                break;
+
         }
 
-
-        lcd_put_cur(0, 2);
-        lcd_send_string ("Hello, Yadro");
-   
-      
-        
-        HAL_DelayMs(1000);
+        rx_buffer[0] = 0;
     }
 }
 
@@ -111,20 +116,20 @@ void I2C_Init() {
     hi2c.Instance = I2C_1;
     hi2c.Init.Mode = HAL_I2C_MODE_MASTER;
 
-    hi2c.Init.DigitalFilter = I2C_DIGITALFILTER_2CLOCKCYCLES;
+    hi2c.Init.DigitalFilter = I2C_DIGITALFILTER_OFF;
     hi2c.Init.AnalogFilter = I2C_ANALOGFILTER_DISABLE;
     hi2c.Init.AutoEnd = I2C_AUTOEND_ENABLE;
 
     /* Настройка частоты */
-    hi2c.Clock.PRESC = 4;
-    hi2c.Clock.SCLDEL = 7;
-    hi2c.Clock.SDADEL = 7;
-    hi2c.Clock.SCLH = 31;
-    hi2c.Clock.SCLL = 31;
+    hi2c.Clock.PRESC = 5;
+    hi2c.Clock.SCLDEL = 15;
+    hi2c.Clock.SDADEL = 15;
+    hi2c.Clock.SCLH = 15;
+    hi2c.Clock.SCLL = 15;
 
-    if (HAL_I2C_Init(&hi2c) != HAL_OK)
+    if (HAL_I2C_Init(&hi2c) == HAL_OK)
     {
-        HAL_USART_Print(&husart0, "I2C init error\r\n", USART_TIMEOUT_DEFAULT);
+        HAL_USART_Print(&husart0, "I2C init OK\r\n", USART_TIMEOUT_DEFAULT);
     }
 }
 
