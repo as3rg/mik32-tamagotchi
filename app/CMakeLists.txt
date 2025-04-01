@@ -3,6 +3,11 @@ set(APP_NAME ${CMAKE_PROJECT_NAME})
 
 add_executable(${APP_NAME}
     main.c
+    lcd_driver.c
+)
+
+target_include_directories(${APP_NAME} PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 target_link_libraries(${APP_NAME}
