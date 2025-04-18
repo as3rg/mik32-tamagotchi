@@ -33,6 +33,17 @@ memset_2:
     bltu \dst_beg, \dst_end, memset_1
 .endm
 
+.macro init init_beg, init_end, val_reg
+    LOCAL init_1, init_2
+    j    init_2
+init_1:
+    lw   \val_reg, (\init_beg)
+    jalr \val_reg
+    add  \init_beg, \init_beg, 4
+init_2:
+    bltu \init_beg, \init_end, init_1
+.endm
+
 
 # la uses PC relative addressing (auipc instruction)
 # Explicit absolut addressing with lui instruction is used 
@@ -99,10 +110,27 @@ _start:
     li t1, 0x50014
     sw t0, (t1)
     #endif
+
+    # Call Constructors
+    #
+    la_abs  a1, __preinit_array_start
+    la_abs  a2, __preinit_array_end
+    init a1, a2, a3
+
+    la_abs  a1, __init_array_start
+    la_abs  a2, __init_array_end
+    init a1, a2, a3
     
     jalr_abs ra, SmallSystemInit
     jalr_abs ra, SystemInit
     jalr_abs ra, main
+
+    # Call Destructors
+    #
+    la_abs  a1, __fini_array_start
+    la_abs  a2, __fini_array_end
+    init a1, a2, a3
+
 1:  wfi
     j 1b
 

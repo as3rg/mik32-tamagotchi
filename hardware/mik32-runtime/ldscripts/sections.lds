@@ -1,7 +1,6 @@
 
 SECTIONS {
     .text ORIGIN(REGION_TEXT) : {
-        PROVIDE(__TEXT_START__ = .);
         *crt0.o(.text .text.*)
         *(.text.smallsysteminit)
         *(.text.SmallSystemInit)
@@ -13,8 +12,38 @@ SECTIONS {
         *(.rodata)
         *(.rodata.*)      
         . = ALIGN(CL_SIZE);
-        PROVIDE(__TEXT_END__ = .);
     } >REGION_TEXT 
+    
+    .init (READONLY): {
+        KEEP (*(SORT_NONE(.init)))
+    } >REGION_TEXT
+
+    .fini (READONLY): {
+        KEEP (*(SORT_NONE(.fini)))
+    } >REGION_TEXT
+
+    .preinit_array (READONLY): ALIGN(4) {
+        PROVIDE_HIDDEN (__preinit_array_start = .);
+        KEEP (*(.preinit_array))
+        PROVIDE_HIDDEN (__preinit_array_end = .);
+    } >REGION_TEXT
+
+    .init_array (READONLY): ALIGN(4) {
+        PROVIDE_HIDDEN (__init_array_start = .);
+        KEEP (*(SORT_BY_INIT_PRIORITY(.init_array.*) SORT_BY_INIT_PRIORITY(.ctors.*)))
+        KEEP (*(.init_array EXCLUDE_FILE (*crtbegin.o *crtbegin?.o *crtend.o *crtend?.o ) .ctors))
+        PROVIDE_HIDDEN (__init_array_end = .);
+    } >REGION_TEXT
+
+    .fini_array (READONLY): ALIGN(4) {
+        PROVIDE_HIDDEN (__fini_array_start = .);
+        KEEP (*(SORT_BY_INIT_PRIORITY(.fini_array.*) SORT_BY_INIT_PRIORITY(.dtors.*)))
+        KEEP (*(.fini_array EXCLUDE_FILE (*crtbegin.o *crtbegin?.o *crtend.o *crtend?.o ) .dtors))
+        PROVIDE_HIDDEN (__fini_array_end = .);
+    } >REGION_TEXT
+
+    PROVIDE (__TEXT_START__ = LOADADDR(.text));
+    PROVIDE (__TEXT_END__ = LOADADDR(.fini_array) + SIZEOF(.fini_array));
 
     .data : 
     AT( __TEXT_END__ ) {
