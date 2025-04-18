@@ -13,11 +13,12 @@ target_include_directories(${APP_NAME} PUBLIC
 target_link_libraries(${APP_NAME}
     PRIVATE
         mik32_hal
+        mik32_runtime
 )
 
 target_link_directories(${APP_NAME}
     PRIVATE
-        ${CMAKE_SOURCE_DIR}/hardware/mik32v2-shared/ldscripts
+        ${CMAKE_SOURCE_DIR}/hardware/mik32-runtime/ldscripts
 )
 
 # Convert output to hex and binary
