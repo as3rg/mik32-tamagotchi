@@ -14,6 +14,7 @@ target_link_libraries(${APP_NAME}
     PRIVATE
         mik32_hal
         mik32_runtime
+        mik32_dht11
 )
 
 target_link_directories(${APP_NAME}
