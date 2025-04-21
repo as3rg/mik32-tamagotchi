@@ -4,10 +4,12 @@ set(APP_NAME ${CMAKE_PROJECT_NAME})
 add_executable(${APP_NAME}
     main.c
     lcd_driver.c
+    utils/source/bitarray.cpp
 )
 
 target_include_directories(${APP_NAME} PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
+    utils/include
 )
 
 target_link_libraries(${APP_NAME}

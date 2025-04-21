@@ -1,0 +1,119 @@
+#include <stddef.h>
+#include <inttypes.h>
+#include <type_traits>
+#include <initializer_list>
+#include <algorithm>
+
+#define always_inline [[gnu::always_inline]]
+
+template <size_t size_>
+struct bitarray {
+public:
+    using storage_type = uint8_t;
+    constexpr static size_t BITS_IN_ST = 8 * sizeof(storage_type);
+    static_assert(size_ % BITS_IN_ST == 0);
+
+private:
+
+template <bool is_const>
+struct bitview {
+    private:
+    using arr_t = std::conditional_t<is_const, const bitarray, bitarray>;
+    
+    arr_t* array;
+    size_t index;
+
+    public:
+    always_inline constexpr bitview(arr_t* array, size_t index) : array(array), index(index) {}
+
+    always_inline constexpr bitview(const bitview&) = default;
+
+    always_inline constexpr bitview(bitview&&) = default;
+
+    always_inline constexpr ~bitview() = default;
+
+    always_inline constexpr bitview& operator=(const bitview&) = default;
+
+    always_inline constexpr bitview& operator=(bitview&&) = default;
+
+    always_inline constexpr operator bool() const {
+        return array->data[index / BITS_IN_ST] & (static_cast<storage_type>(1) << (index % BITS_IN_ST));
+    }
+
+    always_inline constexpr bitview& operator=(bool b) requires (!is_const) {
+        set_bit(b);
+        return *this;
+    }
+
+    always_inline constexpr const bitview& operator=(bool b) const requires (!is_const) {
+        set_bit(b);
+        return *this;
+    }
+
+    always_inline constexpr friend void swap(bitview& l, bitview& r) {
+        std::swap(l.array, r.array);
+        std::swap(l.index, r.index);
+    }
+
+    private:
+    always_inline constexpr void set_bit(bool b) const requires (!is_const) {
+        storage_type& byte = array->data[index / BITS_IN_ST];
+        storage_type mask = (static_cast<storage_type>(1) << (index % BITS_IN_ST));
+        if (b) {
+            byte |=  mask;
+        } else {
+            byte &= ~mask;
+        }
+    }
+};
+
+    using  view = bitview<false>;
+    using cview = bitview<true>;
+    friend  view;
+    friend cview;
+
+public:
+    storage_type data[size_ / BITS_IN_ST];
+
+    always_inline constexpr bitarray() = default;
+
+    always_inline constexpr bitarray(std::initializer_list<bool> ini) : bitarray() {
+        size_t i = 0;
+        for (auto it = ini.begin(); it < ini.end() && i < size_; ++it, ++i) {
+            (*this)[i] = *it;
+        }
+        for (; i < size_; ++i) {
+            (*this)[i] = 0;
+        }
+    }
+
+    always_inline constexpr bitarray(const bitarray&) = default;
+
+    always_inline constexpr bitarray(bitarray&&) = default;
+
+    always_inline constexpr bitarray& operator=(const bitarray&) = default;
+
+    always_inline constexpr bitarray& operator=(bitarray&&) = default;
+
+    always_inline constexpr ~bitarray() = default;
+    
+    always_inline constexpr size_t size() const {
+        return size_;
+    }
+
+    always_inline constexpr size_t raw_size() const {
+        return size_ / BITS_IN_ST;
+    }
+    
+    always_inline constexpr view operator[](size_t index) {
+        return view(this, index);
+    }
+
+    always_inline constexpr cview operator[](size_t index) const {
+        return cview(this, index);
+    }
+
+    always_inline constexpr friend void swap(bitarray& l, bitarray& r) {
+        std::swap_ranges(l.data, l.data + raw_size(), r.data);
+    }
+};
