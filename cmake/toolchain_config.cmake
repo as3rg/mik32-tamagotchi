@@ -29,7 +29,7 @@ string(CONCAT C_FLAGS
 
 string(CONCAT CPP_FLAGS
     ${COMMON_FLAGS}
-    " -std=gnu++17"
+    " -std=gnu++23"
     " -fabi-version=0"
     " -fno-rtti -fno-exceptions"
     " -fno-use-cxa-atexit -fno-threadsafe-statics"
