@@ -5,6 +5,7 @@ add_executable(${APP_NAME}
     main.c
     lcd_driver.c
     utils/source/bitarray.cpp
+    utils/source/canvas.cpp
 )
 
 target_include_directories(${APP_NAME} PUBLIC
