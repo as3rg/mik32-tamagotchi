@@ -16,6 +16,7 @@ target_link_libraries(${APP_NAME}
         mik32_hal
         mik32_runtime
         mik32_dht11
+        mik32_ssd1315
 )
 
 target_link_directories(${APP_NAME}

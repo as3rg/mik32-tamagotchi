@@ -7,6 +7,24 @@ add_library(mik32_runtime
 )
 
 #===================================================================================================
+# MIK32 SSD1315 3SPI support
+#===================================================================================================
+
+add_library(mik32_ssd1315
+    mik32-ssd1315/source/ssd1315.cpp
+)
+
+target_include_directories(mik32_ssd1315
+    PUBLIC
+        mik32-ssd1315/include  
+)
+
+target_link_libraries(mik32_ssd1315
+    PUBLIC
+        mik32_hal
+)
+
+#===================================================================================================
 # MIK32 DHT11 support
 #===================================================================================================
 
@@ -29,6 +47,10 @@ target_link_libraries(mik32_dht11
 #===================================================================================================
 
 add_library(mik32_shared
+    mik32v2-shared/libs/dma_lib.c
+    mik32v2-shared/libs/rtc_lib.c
+    mik32v2-shared/libs/spi_lib.c
+    mik32v2-shared/libs/uart_lib.c
     mik32v2-shared/libs/xprintf.c
 )
 
@@ -37,6 +59,11 @@ target_include_directories(mik32_shared
         mik32v2-shared/periphery
         mik32v2-shared/include
         mik32v2-shared/libs
+)
+
+target_link_libraries(mik32_shared
+    PUBLIC
+        mik32_hal
 )
 
 #===================================================================================================
@@ -73,8 +100,6 @@ target_include_directories(mik32_hal
     PUBLIC
         mik32-hal/peripherals/Include
         mik32-hal/core/Include
-
-    PRIVATE
         mik32-hal/utilities/Include
 )
 
