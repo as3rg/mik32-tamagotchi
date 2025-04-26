@@ -2,8 +2,6 @@
 set(APP_NAME ${CMAKE_PROJECT_NAME})
 
 add_executable(${APP_NAME}
-    main.c
-    lcd_driver.c
     utils/source/bitarray.cpp
     utils/source/canvas.cpp
 )
