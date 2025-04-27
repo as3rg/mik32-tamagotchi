@@ -5,12 +5,12 @@ add_executable(${APP_NAME}
     utils/source/bitarray.cpp
     utils/source/canvas.cpp
     utils/source/intrusive-list.cpp
-    utils/source/screen.cpp
 )
 
 target_include_directories(${APP_NAME} PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     utils/include
+    ui/include
 )
 
 target_link_libraries(${APP_NAME}

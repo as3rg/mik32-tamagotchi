@@ -74,12 +74,29 @@ public:
     }
 
     template <size_t other_height, size_t other_width, canvas_orientation other_orientation> 
-    constexpr canvas& draw(const canvas<other_height, other_width, other_orientation>& other, size_t y, size_t x) {
+    constexpr canvas& draw(const canvas<other_height, other_width, other_orientation>& other, size_t y, size_t x, bool invert = false) {
         for (size_t i = 0; x + i < width() && i < other.width(); ++i) {
             for (size_t j = 0; y + j < height() && j < other.height(); ++j) {
-                (*this)(y + j, x + i) = other(j, i);
+                (*this)(y + j, x + i) = invert ^ other(j, i);
             }
         }
+        return *this;
+    }
+
+    constexpr canvas& fill_rectangle(size_t y, size_t x, size_t h, size_t w, bool color=true) {
+        for (size_t i = 0; x + i < width() && i < w; ++i) {
+            for (size_t j = 0; y + j < height() && j < h; ++j) {
+                (*this)(y + j, x + i) = color;
+            }
+        }
+        return *this;
+    }
+
+    constexpr canvas& draw_rectangle(size_t y, size_t x, size_t h, size_t w, size_t thickness = 1, bool color=true) {
+        fill_rectangle(y, x, thickness, w, color);
+        fill_rectangle(y, x, h, thickness, color);
+        fill_rectangle(y + h - thickness, x, thickness, w, color);
+        fill_rectangle(y, x + w - thickness, h, thickness, color);
         return *this;
     }
 private:
