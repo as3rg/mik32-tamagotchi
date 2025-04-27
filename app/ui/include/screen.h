@@ -4,6 +4,7 @@
 #include "drawable.h"
 #include "intrusive-list.h"
 
+namespace ui {
 struct screen {
 public:
   struct screen_tag;
@@ -46,3 +47,4 @@ public:
     return drawables_;
   }
 };
+} // namespace ui

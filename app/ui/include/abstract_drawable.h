@@ -3,6 +3,7 @@
 #include "drawable.h"
 #include "screen.h"
 
+namespace ui {
 struct abstract_drawable : drawable<screen::canvas, screen::screen_tag> {
 protected:
   size_t y_;
@@ -46,3 +47,4 @@ protected:
   virtual constexpr void draw_impl(screen::canvas &canvas, size_t offset_y,
                                    size_t offset_x) const = 0;
 };
+} // namespace ui

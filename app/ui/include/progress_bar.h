@@ -2,6 +2,7 @@
 
 #include "abstract_drawable.h"
 
+namespace ui {
 struct progress_bar : abstract_drawable {
 protected:
   size_t h;
@@ -51,3 +52,4 @@ protected:
                           width() - 2 * padding);
   }
 };
+} // namespace ui

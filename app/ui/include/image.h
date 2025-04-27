@@ -3,6 +3,7 @@
 #include "abstract_drawable.h"
 #include <cstddef>
 
+namespace ui {
 template <size_t h_, size_t w_> struct image : abstract_drawable {
 protected:
   const canvas<h_, w_, canvas_orientation::VERTICAL> &data;
@@ -32,3 +33,4 @@ protected:
     screen.draw(data, offset_y, offset_x, inverted());
   }
 };
+} // namespace ui

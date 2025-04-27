@@ -3,6 +3,7 @@
 #include "abstract_drawable.h"
 #include "screen.h"
 
+namespace ui {
 struct container : abstract_drawable {
 protected:
   list<drawable<screen::canvas, screen::screen_tag>, screen::screen_tag>
@@ -39,3 +40,4 @@ protected:
     }
   }
 };
+}
