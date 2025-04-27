@@ -5,6 +5,7 @@ add_executable(${APP_NAME}
     utils/source/bitarray.cpp
     utils/source/canvas.cpp
     utils/source/intrusive-list.cpp
+    utils/source/screen.cpp
 )
 
 target_include_directories(${APP_NAME} PUBLIC
