@@ -1,6 +1,5 @@
 #pragma once
 
-#include "bitarray.h"
 #include "canvas.h"
 #include "intrusive-list.h"
 
@@ -22,27 +21,27 @@ public:
 
   list<drawable<canvas>, screen_tag> drawables;
 
-  always_inline constexpr screen(std::initializer_list<std::initializer_list<bool>> ini = {}) : screen_canvas(ini) {}
+  constexpr screen(std::initializer_list<std::initializer_list<bool>> ini = {}) : screen_canvas(ini) {}
 
-  always_inline constexpr screen(const screen&) = default;
+  constexpr screen(const screen&) = default;
   
-  always_inline constexpr screen(screen&&) = default;
+  constexpr screen(screen&&) = default;
 
-  always_inline constexpr screen& operator=(const screen&) = default;
+  constexpr screen& operator=(const screen&) = default;
 
-  always_inline constexpr screen& operator=(screen&&) = default;
+  constexpr screen& operator=(screen&&) = default;
 
-  always_inline constexpr void redraw() {
+  constexpr void redraw() {
     for (auto it = drawables.begin(); it != drawables.end(); ++it) {
       it->draw(screen_canvas);
     }
   }
 
-  always_inline constexpr decltype(auto) raw_data() const {
+  constexpr decltype(auto) raw_data() const {
     return screen_canvas.raw_data();
   }
 
-  always_inline constexpr size_t raw_size() const {
+  constexpr size_t raw_size() const {
     return screen_canvas.raw_size();
   }
 };
@@ -54,19 +53,19 @@ private:
   size_t y;
   size_t x;
 public:
-  always_inline constexpr image(const canvas<h_, w_, canvas_orientation::VERTICAL> &data, size_t y, size_t x) : data(data), y(y), x(x) {}
+  constexpr image(const canvas<h_, w_, canvas_orientation::VERTICAL> &data, size_t y, size_t x) : data(data), y(y), x(x) {}
 
-  always_inline constexpr ~image() override = default;
+  constexpr ~image() override = default;
 
-  always_inline constexpr image(const image&) = default;
+  constexpr image(const image&) = default;
   
-  always_inline constexpr image(image&&) = default;
+  constexpr image(image&&) = default;
 
-  always_inline constexpr image& operator=(const image&) = default;
+  constexpr image& operator=(const image&) = default;
 
-  always_inline constexpr image& operator=(image&&) = default;
+  constexpr image& operator=(image&&) = default;
 
-  always_inline constexpr void draw(screen::canvas& screen) override {
+  constexpr void draw(screen::canvas& screen) override {
     screen.draw(data, y, x);
   }
 };

@@ -7,8 +7,6 @@
 #include <initializer_list>
 #include <algorithm>
 
-#define always_inline [[gnu::always_inline]]
-
 template <size_t size_>
 struct bitarray {
 public:
@@ -28,40 +26,40 @@ private:
     template<size_t s_>
     friend struct bitarray;
 
-    always_inline constexpr bitview(arr_t* array, size_t index) : array(array), index(index) {}
+    constexpr bitview(arr_t* array, size_t index) : array(array), index(index) {}
 public:
 
-    always_inline constexpr bitview(const bitview&) = default;
+    constexpr bitview(const bitview&) = default;
 
-    always_inline constexpr bitview(bitview&&) = delete;
+    constexpr bitview(bitview&&) = delete;
 
-    always_inline constexpr ~bitview() = default;
+    constexpr ~bitview() = default;
 
-    always_inline constexpr bitview& operator=(const bitview&) = default;
+    constexpr bitview& operator=(const bitview&) = default;
 
-    always_inline constexpr bitview& operator=(bitview&&) = delete;
+    constexpr bitview& operator=(bitview&&) = delete;
 
-    always_inline constexpr operator bool() const {
+    constexpr operator bool() const {
         return array->data[index / BITS_IN_ST] & (static_cast<storage_type>(1) << (index % BITS_IN_ST));
     }
 
-    always_inline constexpr bitview& operator=(bool b) requires (!is_const) {
+    constexpr bitview& operator=(bool b) requires (!is_const) {
         set_bit(b);
         return *this;
     }
 
-    always_inline constexpr const bitview& operator=(bool b) const requires (!is_const) {
+    constexpr const bitview& operator=(bool b) const requires (!is_const) {
         set_bit(b);
         return *this;
     }
 
-    always_inline constexpr friend void swap(bitview& l, bitview& r) {
+    constexpr friend void swap(bitview& l, bitview& r) {
         std::swap(l.array, r.array);
         std::swap(l.index, r.index);
     }
 
     private:
-    always_inline constexpr void set_bit(bool b) const requires (!is_const) {
+    constexpr void set_bit(bool b) const requires (!is_const) {
         storage_type& byte = array->data[index / BITS_IN_ST];
         storage_type mask = (static_cast<storage_type>(1) << (index % BITS_IN_ST));
         if (b) {
@@ -80,9 +78,9 @@ public:
 public:
     storage_type data[RAW_SIZE];
 
-    always_inline constexpr bitarray() = default;
+    constexpr bitarray() = default;
 
-    always_inline constexpr bitarray(std::initializer_list<bool> ini) : bitarray() {
+    constexpr bitarray(std::initializer_list<bool> ini) : bitarray() {
         size_t i = 0;
         for (auto it = ini.begin(); it < ini.end() && i < size_; ++it, ++i) {
             (*this)[i] = *it;
@@ -92,35 +90,35 @@ public:
         }
     }
 
-    always_inline constexpr bitarray(const bitarray&) = default;
+    constexpr bitarray(const bitarray&) = default;
 
-    always_inline constexpr bitarray(bitarray&&) = default;
+    constexpr bitarray(bitarray&&) = default;
 
-    always_inline constexpr bitarray& operator=(const bitarray&) = default;
+    constexpr bitarray& operator=(const bitarray&) = default;
 
-    always_inline constexpr bitarray& operator=(bitarray&&) = default;
+    constexpr bitarray& operator=(bitarray&&) = default;
 
-    always_inline constexpr ~bitarray() = default;
+    constexpr ~bitarray() = default;
     
-    always_inline constexpr size_t size() const {
+    constexpr size_t size() const {
         return size_;
     }
 
-    always_inline constexpr size_t raw_size() const {
+    constexpr size_t raw_size() const {
         return RAW_SIZE;
     }
     
-    always_inline constexpr view operator[](size_t index) {
+    constexpr view operator[](size_t index) {
         assert(index < size());
         return view(this, index);
     }
 
-    always_inline constexpr cview operator[](size_t index) const {
+    constexpr cview operator[](size_t index) const {
         assert(index < size());
         return cview(this, index);
     }
 
-    always_inline constexpr friend void swap(bitarray& l, bitarray& r) {
+    constexpr friend void swap(bitarray& l, bitarray& r) {
         std::swap_ranges(l.data, l.data + l.raw_size(), r.data);
     }
 };
