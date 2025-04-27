@@ -1,3 +1,6 @@
+#pragma once
+
+#include <cassert>
 #include <stddef.h>
 #include <inttypes.h>
 #include <type_traits>
@@ -11,30 +14,32 @@ struct bitarray {
 public:
     using storage_type = uint8_t;
     constexpr static size_t BITS_IN_ST = 8 * sizeof(storage_type);
-    static_assert(size_ % BITS_IN_ST == 0);
-
+    constexpr static size_t RAW_SIZE = (size_ + BITS_IN_ST - 1) / BITS_IN_ST;
 private:
 
 template <bool is_const>
 struct bitview {
-    private:
+private:
     using arr_t = std::conditional_t<is_const, const bitarray, bitarray>;
     
     arr_t* array;
     size_t index;
 
-    public:
+    template<size_t s_>
+    friend struct bitarray;
+
     always_inline constexpr bitview(arr_t* array, size_t index) : array(array), index(index) {}
+public:
 
     always_inline constexpr bitview(const bitview&) = default;
 
-    always_inline constexpr bitview(bitview&&) = default;
+    always_inline constexpr bitview(bitview&&) = delete;
 
     always_inline constexpr ~bitview() = default;
 
     always_inline constexpr bitview& operator=(const bitview&) = default;
 
-    always_inline constexpr bitview& operator=(bitview&&) = default;
+    always_inline constexpr bitview& operator=(bitview&&) = delete;
 
     always_inline constexpr operator bool() const {
         return array->data[index / BITS_IN_ST] & (static_cast<storage_type>(1) << (index % BITS_IN_ST));
@@ -73,7 +78,7 @@ struct bitview {
     friend cview;
 
 public:
-    storage_type data[size_ / BITS_IN_ST];
+    storage_type data[RAW_SIZE];
 
     always_inline constexpr bitarray() = default;
 
@@ -102,18 +107,20 @@ public:
     }
 
     always_inline constexpr size_t raw_size() const {
-        return size_ / BITS_IN_ST;
+        return RAW_SIZE;
     }
     
     always_inline constexpr view operator[](size_t index) {
+        assert(index < size());
         return view(this, index);
     }
 
     always_inline constexpr cview operator[](size_t index) const {
+        assert(index < size());
         return cview(this, index);
     }
 
     always_inline constexpr friend void swap(bitarray& l, bitarray& r) {
-        std::swap_ranges(l.data, l.data + raw_size(), r.data);
+        std::swap_ranges(l.data, l.data + l.raw_size(), r.data);
     }
 };

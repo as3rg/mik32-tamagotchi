@@ -1,4 +1,7 @@
+#pragma once
+
 #include "bitarray.h"
+#include <cassert>
 
 enum class canvas_orientation {
     HORIZONTAL,
@@ -31,9 +34,11 @@ public:
     }
 
     always_inline constexpr auto operator()(size_t y, size_t x) {
-        if constexpr (orientation() == canvas_orientation::VERTICAL) {
+        assert(y < height());
+        assert(x < width());
+        if constexpr (orientation_ == canvas_orientation::VERTICAL) {
             return data[x * height() + y];
-        } else if constexpr (orientation() == canvas_orientation::HORIZONTAL) {
+        } else if constexpr (orientation_ == canvas_orientation::HORIZONTAL) {
             return data[y * width() + x];
         } else {
             static_assert(false, "Unsupported canvas orientation");
@@ -41,9 +46,11 @@ public:
     }
 
     always_inline constexpr auto operator()(size_t y, size_t x) const {
-        if constexpr (orientation() == canvas_orientation::VERTICAL) {
+        assert(y < height());
+        assert(x < width());
+        if constexpr (orientation_ == canvas_orientation::VERTICAL) {
             return data[x * height() + y];
-        } else if constexpr (orientation() == canvas_orientation::HORIZONTAL) {
+        } else if constexpr (orientation_ == canvas_orientation::HORIZONTAL) {
             return data[y * width() + x];
         } else {
             static_assert(false, "Unsupported canvas orientation");
@@ -54,11 +61,11 @@ public:
         return orientation_;
     }
 
-    always_inline constexpr storage_t::storage_type* raw_data() {
+    always_inline constexpr typename storage_t::storage_type* raw_data() {
         return data.data;
     }
 
-    always_inline constexpr const storage_t::storage_type* raw_data() const {
+    always_inline constexpr const typename storage_t::storage_type* raw_data() const {
         return data.data;
     }
 
