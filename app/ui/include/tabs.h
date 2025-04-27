@@ -5,7 +5,7 @@
 namespace ui {
 struct tabs : abstract_drawable {
 protected:
-  list<drawable<screen::canvas, screen::screen_tag>, screen::screen_tag>
+  utils::list<drawable<screen::canvas, screen::screen_tag>, screen::screen_tag>
       drawables_;
   size_t index_;
 
@@ -20,14 +20,14 @@ public:
 
   constexpr tabs &operator=(tabs &&) = default;
 
-  constexpr list<drawable<screen::canvas, screen::screen_tag>,
-                 screen::screen_tag> &
+  constexpr utils::list<drawable<screen::canvas, screen::screen_tag>,
+                        screen::screen_tag> &
   drawables() {
     return drawables_;
   }
 
-  constexpr const list<drawable<screen::canvas, screen::screen_tag>,
-                       screen::screen_tag> &
+  constexpr const utils::list<drawable<screen::canvas, screen::screen_tag>,
+                              screen::screen_tag> &
   drawables() const {
     return drawables_;
   }

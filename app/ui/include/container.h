@@ -6,7 +6,7 @@
 namespace ui {
 struct container : abstract_drawable {
 protected:
-  list<drawable<screen::canvas, screen::screen_tag>, screen::screen_tag>
+  utils::list<drawable<screen::canvas, screen::screen_tag>, screen::screen_tag>
       drawables_;
 
 public:
@@ -20,14 +20,14 @@ public:
 
   constexpr container &operator=(container &&) = default;
 
-  constexpr list<drawable<screen::canvas, screen::screen_tag>,
-                 screen::screen_tag> &
+  constexpr utils::list<drawable<screen::canvas, screen::screen_tag>,
+                        screen::screen_tag> &
   drawables() {
     return drawables_;
   }
 
-  constexpr const list<drawable<screen::canvas, screen::screen_tag>,
-                       screen::screen_tag> &
+  constexpr const utils::list<drawable<screen::canvas, screen::screen_tag>,
+                              screen::screen_tag> &
   drawables() const {
     return drawables_;
   }
@@ -40,4 +40,4 @@ protected:
     }
   }
 };
-}
+} // namespace ui

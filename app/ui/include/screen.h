@@ -8,11 +8,11 @@ namespace ui {
 struct screen {
 public:
   struct screen_tag;
-  using canvas = canvas<64, 128, canvas_orientation::VERTICAL>;
+  using canvas = utils::canvas<64, 128, utils::canvas_orientation::VERTICAL>;
 
 protected:
   canvas screen_canvas;
-  list<drawable<canvas, screen_tag>, screen_tag> drawables_;
+  utils::list<drawable<canvas, screen_tag>, screen_tag> drawables_;
 
 public:
   constexpr screen(std::initializer_list<std::initializer_list<bool>> ini = {})
@@ -38,11 +38,11 @@ public:
 
   constexpr size_t raw_size() const { return screen_canvas.raw_size(); }
 
-  constexpr list<drawable<canvas, screen_tag>, screen_tag> &drawables() {
+  constexpr utils::list<drawable<canvas, screen_tag>, screen_tag> &drawables() {
     return drawables_;
   }
 
-  constexpr const list<drawable<canvas, screen_tag>, screen_tag> &
+  constexpr const utils::list<drawable<canvas, screen_tag>, screen_tag> &
   drawables() const {
     return drawables_;
   }
