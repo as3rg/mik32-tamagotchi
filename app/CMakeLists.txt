@@ -2,6 +2,7 @@
 set(APP_NAME ${CMAKE_PROJECT_NAME})
 
 add_executable(${APP_NAME}
+    main.cpp
     utils/source/bitarray.cpp
     utils/source/canvas.cpp
     utils/source/intrusive-list.cpp
