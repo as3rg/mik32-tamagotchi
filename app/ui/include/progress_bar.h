@@ -11,9 +11,9 @@ protected:
 
   constexpr static size_t border_width = 1;
   constexpr static size_t offset = 2;
-  constexpr static uint8_t max_progress = 0xff;
-
 public:
+  constexpr static uint8_t max_progress = 0xff;
+  
   constexpr progress_bar(size_t y, size_t x, size_t h, size_t w)
       : abstract_drawable(y, x), h(h), w(w), progress_(max_progress / 2) {}
 

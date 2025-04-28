@@ -11,6 +11,7 @@ target_include_directories(${APP_NAME} PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     utils/include
     ui/include
+    tamagotchi/include
 )
 
 target_link_libraries(${APP_NAME}

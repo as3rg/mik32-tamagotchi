@@ -15,9 +15,9 @@ protected:
   constexpr static size_t lvl_thickness = 1;
   constexpr static size_t lvl_dash_len = 1;
   constexpr static size_t indicator_thickness = 3;
+public:
   constexpr static uint8_t max_value = 0xff;
 
-public:
   constexpr indicator_bar(size_t y, size_t x, size_t h, size_t w)
       : abstract_drawable(y, x), h(h), w(w), indicator_(max_value), lvl_2_(0),
         lvl_1_(max_value) {}
