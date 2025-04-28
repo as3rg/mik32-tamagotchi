@@ -82,6 +82,17 @@ error:
 }
 
 HAL_StatusTypeDef ssd1315::init() const {
+    GPIO_InitTypeDef GPIO_InitStruct;
+    GPIO_InitStruct.Pin = dc_pin;
+    GPIO_InitStruct.Pull = HAL_GPIO_PULL_NONE;
+    GPIO_InitStruct.Mode = HAL_GPIO_MODE_GPIO_OUTPUT;
+    HAL_GPIO_Init(dc_gpio, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = reset_pin;
+    GPIO_InitStruct.Pull = HAL_GPIO_PULL_NONE;
+    GPIO_InitStruct.Mode = HAL_GPIO_MODE_GPIO_OUTPUT;
+    HAL_GPIO_Init(reset_gpio, &GPIO_InitStruct);
+
     HAL_GPIO_WritePin(reset_gpio, reset_pin, GPIO_PIN_HIGH);
     HAL_DelayMs(INIT_DELAY_MS);
     HAL_GPIO_WritePin(reset_gpio, reset_pin, GPIO_PIN_LOW);
