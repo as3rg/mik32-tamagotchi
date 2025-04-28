@@ -16,7 +16,7 @@ string(CONCAT COMMON_FLAGS
     " -march=rv32imc_zicsr_zifencei"
     " -mabi=ilp32"
     " -mcmodel=medlow"
-    " -g3 -O1"
+    " -g3 -O3"
     " -Wall"
     " -fsigned-char -ffunction-sections"
     " -DMIK32V2"

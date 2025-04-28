@@ -1,5 +1,5 @@
 
-#define EXCEPTION_STACK_SPACE 32*4
+#define EXCEPTION_STACK_SPACE 31*4
 #define EXCEPTION_SAVED_REGISTERS 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31
 
 .globl _start, main
@@ -33,17 +33,6 @@ memset_2:
     bltu \dst_beg, \dst_end, memset_1
 .endm
 
-.macro init init_beg, init_end, val_reg
-    LOCAL init_1, init_2
-    j    init_2
-init_1:
-    lw   \val_reg, (\init_beg)
-    jalr \val_reg
-    add  \init_beg, \init_beg, 4
-init_2:
-    bltu \init_beg, \init_end, init_1
-.endm
-
 
 # la uses PC relative addressing (auipc instruction)
 # Explicit absolut addressing with lui instruction is used 
@@ -75,13 +64,13 @@ _start:
     
     li t0, 128000
     start_loop_delay:
-    nop
+    #nop
     addi t0, t0, -1
     bnez t0, start_loop_delay
     # Init stack and global pointer
     #
     la_abs  sp, __C_STACK_TOP__
-    la_abs  gp, _gp
+    la_abs  gp, __global_pointer$
     
     # Init data
     #
@@ -99,9 +88,14 @@ _start:
     
     # Clear bss
     #
-    la_abs  a1, __BSS_START__
+    la_abs  a1, __SBSS_START__
     la_abs  a2, __BSS_END__
     memset a1, a2, zero
+
+    # Init mtvec
+    #
+    la_abs t0, __TRAP_TEXT_START__
+    csrw mtvec, t0
 
     #ifdef MIK32V0
     # Enable pad_config clocking
@@ -110,27 +104,12 @@ _start:
     li t1, 0x50014
     sw t0, (t1)
     #endif
-
-    # Call Constructors
-    #
-    la_abs  a1, __preinit_array_start
-    la_abs  a2, __preinit_array_end
-    init a1, a2, a3
-
-    la_abs  a1, __init_array_start
-    la_abs  a2, __init_array_end
-    init a1, a2, a3
     
     jalr_abs ra, SmallSystemInit
     jalr_abs ra, SystemInit
+    jalr_abs ra, __libc_init_array
     jalr_abs ra, main
-
-    # Call Destructors
-    #
-    la_abs  a1, __fini_array_start
-    la_abs  a2, __fini_array_end
-    init a1, a2, a3
-
+    jalr_abs ra, __libc_fini_array
 1:  wfi
     j 1b
 
@@ -152,7 +131,7 @@ raw_trap_handler:
     // Save registers
     addi    sp, sp, -(EXCEPTION_STACK_SPACE)
     .irp index, EXCEPTION_SAVED_REGISTERS
-        sw      x\index, 4*index(sp)
+        sw      x\index, 4*(index-1)(sp)
     .endr
     
     // Call handler 
@@ -161,7 +140,7 @@ raw_trap_handler:
     
     // restore registers
     .irp index, EXCEPTION_SAVED_REGISTERS
-        lw      x\index, 4*index(sp)
+        lw      x\index, 4*(index-1)(sp)
     .endr
     addi    sp, sp, EXCEPTION_STACK_SPACE
     mret
