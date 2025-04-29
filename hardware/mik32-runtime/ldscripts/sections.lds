@@ -3,7 +3,7 @@ SECTIONS {
     
     /* startup/crt code segment */
     .startup ORIGIN(REGION_TEXT) : {
-        *crt0.S.o(.text .text.*)
+        KEEP(*(.start_text))
     } >REGION_TEXT
 
     /* Code intended to be copied to REGION_RAM before execution */
@@ -12,7 +12,6 @@ SECTIONS {
         *(.small_ram_text)
         . = ORIGIN(REGION_RAM) + 0xC0;
         PROVIDE(__TRAP_TEXT_START__ = .);
-        KEEP(*crt0.S.o(.trap_text))
         KEEP(*(.trap_text))
         *(.ram_text)
         . = ALIGN(4);
@@ -127,7 +126,7 @@ SECTIONS {
     smaller than 0x1000 then we should start from bss end to cover as much of
     the program as possible. */
 
-    __global_pointer$ = MIN(__SDATA_START__ + 2016, MAX(__DATA_START__ + 2016, __BSS_END__ - 2016));
+    __global_pointer = MIN(__SDATA_START__ + 2016, MAX(__DATA_START__ + 2016, __BSS_END__ - 2016));
 
     ASSERT(__BSS_END__ < ORIGIN(REGION_RAM) + LENGTH(REGION_RAM) - __stack_size, "REGION_RAM section overflows")
 
