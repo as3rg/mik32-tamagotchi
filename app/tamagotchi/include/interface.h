@@ -133,7 +133,7 @@ public:
   void update() {
     if (tamchi.is_dead())
       return;
-    tamchi.temperature = dht.receive().temp_h;
+    tamchi.temperature = std::max(tamagotchi::min_temperature, std::min<size_t>(dht.receive().temp_h, tamagotchi::max_temperature));
     tamchi.brightness =
         brightness.get() * tamagotchi::max_brightness / sensor::max_value;
   }
